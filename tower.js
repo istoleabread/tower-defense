@@ -1,7 +1,7 @@
 // dph -> Damage per hit
 // pos is the tower position
 class Tower extends CommonProps {
-    static attackList = {};
+    static attackList = {}; // maintain info regarding all towers ongoing combat
     constructor(hitpoints, dph, pos) {
         super(hitpoints, dph, pos);
         this.id = pos;
@@ -26,7 +26,7 @@ class Tower extends CommonProps {
         this.setHealthBar(this.calculateHpPercent());
     }
 
-    static findAndAttack(){}
+    static findAndAttack() {}
 
     static prepareAttackOnTroops(currentTarget, towerObjs) {
         // if target is already dead, do nothing???

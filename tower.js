@@ -26,85 +26,62 @@ class Tower extends CommonProps {
         this.setHealthBar(this.calculateHpPercent());
     }
 
+    static findAndAttack(){}
+
     static prepareAttackOnTroops(currentTarget, towerObjs) {
-        // find the target if its in front of tower and attack it
+        // if target is already dead, do nothing???
+        // TODO: If target is already dead, find another prey
         if (!currentTarget.isActive()) {
             return;
         }
 
         for (const tower of towerObjs) {
+            // if tower is already destroyed, skip the loop
             if (!tower.isActive()) {
-                return;
+                continue;
             }
-
+            // if current target is the tower's main enemy
             if (currentTarget.pos === tower.getCurrentEnemy()) {
-                let attackInterval;
+                // If tower is already in a combat other than its main enemy, leave that combat and start a combat with its main enemy
                 if (Tower.attackList[tower.pos]) {
                     clearInterval(Tower.attackList[tower.pos][1]);
                     delete Tower.attackList[tower.pos];
                 }
 
-                attackInterval = setInterval(() => {
-                    // If tower is destroyed or troop is dead, stop attacking
-                    if (!currentTarget.isActive()) {
-                        clearInterval(attackInterval);
-                        delete Tower.attackList[tower.pos];
-                        Tower.prepareAttackOnTroops(currentTarget, towerObjs);
-                        return;
-                    }
-
-                    if (!tower.isActive()) {
-                        clearInterval(attackInterval);
-                        delete Tower.attackList[tower.pos];
-                        return;
-                    }
-
-                    tower.attackTroop(currentTarget);
-
-                    // Do damage to opponent after weapon reaches their
-                    setTimeout(() => {
-                        currentTarget.takeDamage(tower.getDPH());
-                        currentTarget.setHealthBar(currentTarget.calculateHpPercent());
-                    }, 890);
-                }, 900);
-                Tower.attackList[tower.pos] = [currentTarget, attackInterval];
-                // Still building the feature for towers to know of surrouding troops rather than the main one
-            // } else {
-            //     // If tower is not already occupied
-            //     if (!Tower.attackList[tower.pos]) {
-            //         let attackInterval;
-            //         console.log(tower);
-            //         attackInterval = setInterval(() => {
-            //             // If tower is destroyed or troop is dead, stop attacking
-            //             if (!currentTarget.isActive()) {
-            //                 clearInterval(attackInterval);
-            //                 delete Tower.attackList[tower.pos];
-            //                 console.log("me run");
-            //                 Tower.prepareAttackOnTroops(currentTarget, towerObjs);
-            //                 return;
-            //             }
-
-            //             if (!tower.isActive()) {
-            //                 clearInterval(attackInterval);
-            //                 delete Tower.attackList[tower.pos];
-            //                 return;
-            //             }
-
-            //             tower.attackTroop(currentTarget);
-
-            //             // Do damage to opponent after weapon reaches their
-            //             setTimeout(() => {
-            //                 currentTarget.takeDamage(tower.getDPH());
-            //                 currentTarget.setHealthBar(currentTarget.calculateHpPercent());
-            //             }, 890);
-            //         }, 900);
-            //     }
+                this.attackOnTroops(currentTarget, tower, towerObjs);
+            } else if (!Tower.attackList[tower.pos]) {
+                // If tower is not already occupied with its main enemy, attack the troop at any position
+                this.attackOnTroops(currentTarget, tower, towerObjs);
             }
         }
     }
 
-    static attackOnTroops() {
-        console.log(Tower.attackList);
+    static attackOnTroops(currentTarget, tower, towerObjs) {
+        let attackInterval;
+        attackInterval = setInterval(() => {
+            // If tower is destroyed or troop is dead, stop attacking
+            if (!currentTarget.isActive()) {
+                clearInterval(attackInterval);
+                delete Tower.attackList[tower.pos];
+                Tower.prepareAttackOnTroops(currentTarget, towerObjs);
+                return;
+            }
+
+            if (!tower.isActive()) {
+                clearInterval(attackInterval);
+                delete Tower.attackList[tower.pos];
+                return;
+            }
+
+            tower.attackTroop(currentTarget);
+
+            // Do damage to opponent after weapon reaches their position
+            setTimeout(() => {
+                currentTarget.takeDamage(tower.getDPH());
+                currentTarget.setHealthBar(currentTarget.calculateHpPercent());
+            }, 890);
+        }, 900);
+        Tower.attackList[tower.pos] = [currentTarget, attackInterval];
     }
 
     setHealthBar(percent) {

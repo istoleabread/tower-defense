@@ -24,31 +24,31 @@ class Combat {
         console.log(this.towerObjs);
     }
 
-    createTroops(troop) {
+    createTroop(troop) {
         console.log(troop);
         // If there is no empty space in arena, show error
         if (!this.getEmptyTroopPosition()) {
             this.showMsg("Please wait for a position to get empty before deploying a new troop!");
             return;
         }
-        
+
         switch (troop) {
             case "archer":
                 const archer = new Archer("archer");
                 this.troopObjs.push(archer);
-                this.addTroopsToDom(archer);
+                this.addTroopToDom(archer);
                 archer.calculateCurrentCoordinates();
                 return;
             case "wizard":
                 const wizard = new Wizard("wizard");
                 this.troopObjs.push(wizard);
-                this.addTroopsToDom(wizard);
+                this.addTroopToDom(wizard);
                 wizard.calculateCurrentCoordinates();
                 return;
             case "noir":
                 const noir = new Noir("noir");
                 this.troopObjs.push(noir);
-                this.addTroopsToDom(noir);
+                this.addTroopToDom(noir);
                 noir.calculateCurrentCoordinates();
                 return;
             default:
@@ -59,7 +59,7 @@ class Combat {
     addListeners() {
         document.querySelector(".troops").addEventListener("click", (ev) => {
             if (ev.target.classList.contains("troop")) {
-                this.createTroops(ev.target.dataset.type);
+                this.createTroop(ev.target.dataset.type);
             }
         });
 
@@ -82,7 +82,7 @@ class Combat {
         observer.observe(arena, config);
     }
 
-    addTroopsToDom(troopObj) {
+    addTroopToDom(troopObj) {
         const troop = document.createElement("div");
         const healthBar = document.createElement("div");
         const healthColor = document.createElement("div");

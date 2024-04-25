@@ -83,7 +83,7 @@ class Archer extends Troop {
 // A wizard has 110 hitpoints
 class Wizard extends Troop {
     constructor(name) {
-        super(110, 50, name);
+        super(500, 5, name);
     }
 
     attackTower(target) {

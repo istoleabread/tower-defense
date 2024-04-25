@@ -1,5 +1,5 @@
 // pos here is the troop/tower position
-class CommonProps {
+class GameEntityAttributes {
     constructor(hitpoints, dph, pos) {
         this._totalHP = hitpoints;
         this.hitpoints = hitpoints;

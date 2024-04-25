@@ -1,6 +1,6 @@
 // dph -> Damage per hit
 // pos is the tower position
-class Tower extends CommonProps {
+class Tower extends GameEntityAttributes {
     static attackList = {}; // maintain info regarding all towers ongoing combat
     constructor(hitpoints, dph, pos) {
         super(hitpoints, dph, pos);
@@ -26,11 +26,13 @@ class Tower extends CommonProps {
         this.setHealthBar(this.calculateHpPercent());
     }
 
-    static findAndAttack() {}
+    static findAndAttack(towerObjs) {
+        if (!Object.values(Tower.attackList).length) return; // If there is no combat ongoing, return
+        const firstTarget = Object.values(Tower.attackList)[0][0];
+        Tower.prepareAttackOnTroops(firstTarget, towerObjs);
+    }
 
     static prepareAttackOnTroops(currentTarget, towerObjs) {
-        // if target is already dead, do nothing???
-        // TODO: If target is already dead, find another prey
         if (!currentTarget.isActive()) {
             return;
         }
@@ -60,16 +62,10 @@ class Tower extends CommonProps {
         let attackInterval;
         attackInterval = setInterval(() => {
             // If tower is destroyed or troop is dead, stop attacking
-            if (!currentTarget.isActive()) {
+            if (!currentTarget.isActive() || !tower.isActive()) {
                 clearInterval(attackInterval);
                 delete Tower.attackList[tower.pos];
-                Tower.prepareAttackOnTroops(currentTarget, towerObjs);
-                return;
-            }
-
-            if (!tower.isActive()) {
-                clearInterval(attackInterval);
-                delete Tower.attackList[tower.pos];
+                Tower.findAndAttack(towerObjs);
                 return;
             }
 

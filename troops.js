@@ -1,6 +1,5 @@
 // hitpoints -> health, dph -> damage per hit
-// We dont the position of troop while deploting it, so ""
-class Troop extends CommonProps {
+class Troop extends GameEntityAttributes {
     static count = 0;
     constructor(hitpoints, dph, name) {
         super(hitpoints, dph, "");
@@ -15,7 +14,7 @@ class Troop extends CommonProps {
     }
 
     static prepareAttackOnTowers(troopObj, towerObjs) {
-        let attackInterval, currentTarget;
+        let currentTarget;
         const mainTower = troopObj.getCurrentEnemy(); // Get the tower in front of troop
         currentTarget = towerObjs.find((tower) => {
             return tower.pos === mainTower && tower.isActive();
@@ -28,11 +27,17 @@ class Troop extends CommonProps {
             });
         }
 
-        // If all the towers are already destroyed, do nothing
         if (!currentTarget) {
+            console.log("All towers destroyed!");
             return;
         }
 
+        // Attack the tower
+        Troop.attackTower(currentTarget, troopObj, towerObjs);
+    }
+
+    static attackTower(currentTarget, troopObj, towerObjs) {
+        let attackInterval;
         const coord = currentTarget.getCoordinates();
         attackInterval = setInterval(() => {
             // If current tower is destroyed, clearInterval and find new standing tower
@@ -52,7 +57,7 @@ class Troop extends CommonProps {
 
             troopObj.attackTower(coord);
 
-            // Do damage to opponent after weapon reaches their
+            // Do damage to opponent after weapon reaches their position
             setTimeout(() => {
                 currentTarget.takeDamage(troopObj.getDPH());
                 currentTarget.setHealthBar(currentTarget.calculateHpPercent());
@@ -62,6 +67,9 @@ class Troop extends CommonProps {
 
     setHealthBar(percent) {
         const elem = document.querySelector(`.${this.id}color`);
+        if (!elem) {
+            return;
+        }
         elem.style.backgroundColor = this.getBarColor(percent);
         elem.style.right = 100 - percent + "%";
     }
@@ -83,7 +91,7 @@ class Archer extends Troop {
 // A wizard has 110 hitpoints
 class Wizard extends Troop {
     constructor(name) {
-        super(500, 5, name);
+        super(500, 50, name);
     }
 
     attackTower(target) {

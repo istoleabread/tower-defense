@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Tower Defense</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="errorMsg"></div>
+        <div class="wrapper">
+            <h1>Tower Defense</h1>
+            <div class="towers"></div>
+            <div class="troops">
+                <div class="troop archerbtn" data-type="archer" title="Archer"></div>
+                <div class="troop wizardbtn" data-type="wizard" title="Wizard"></div>
+                <div class="troop noirbtn" data-type="noir" title="Dracula/Noir"></div>
+            </div>
+            <div class="arena">
+                <div class="position pos1" data-type="pos1">Troop #1</div>
+                <div class="position pos2" data-type="pos2">Troop #2</div>
+                <div class="position pos3" data-type="pos3">Troop #3</div>
+            </div>
+        </div>
+        <!-- <div class="weapon arrow"></div> -->
+
+        <script src="common.js"></script>
+        <script src="weapons.js"></script>
+        <script src="tower.js"></script>
+        <script src="troops.js"></script>
+        <script src="combat.js" async defer></script>
+    </body>
+</html>

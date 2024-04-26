@@ -33,10 +33,10 @@ class Troop extends GameEntityAttributes {
         }
 
         // Attack the tower
-        Troop.attackTower(currentTarget, troopObj, towerObjs);
+        Troop.attackOnTower(currentTarget, troopObj, towerObjs);
     }
 
-    static attackTower(currentTarget, troopObj, towerObjs) {
+    static attackOnTower(currentTarget, troopObj, towerObjs) {
         let attackInterval;
         const coord = currentTarget.getCoordinates();
         attackInterval = setInterval(() => {

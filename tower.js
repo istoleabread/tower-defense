@@ -44,21 +44,21 @@ class Tower extends GameEntityAttributes {
             }
             // if current target is the tower's main enemy
             if (currentTarget.pos === tower.getCurrentEnemy()) {
-                // If tower is already in a combat other than its main enemy, leave that combat and start a combat with its main enemy
+                // If tower is already in a combat other than its main enemy, leave that combat and start a new combat with its main enemy
                 if (Tower.attackList[tower.pos]) {
                     clearInterval(Tower.attackList[tower.pos][1]);
                     delete Tower.attackList[tower.pos];
                 }
 
-                this.attackOnTroops(currentTarget, tower, towerObjs);
+                this.attackOnTroop(currentTarget, tower, towerObjs);
             } else if (!Tower.attackList[tower.pos]) {
                 // If tower is not already occupied with its main enemy, attack the troop at any position
-                this.attackOnTroops(currentTarget, tower, towerObjs);
+                this.attackOnTroop(currentTarget, tower, towerObjs);
             }
         }
     }
 
-    static attackOnTroops(currentTarget, tower, towerObjs) {
+    static attackOnTroop(currentTarget, tower, towerObjs) {
         let attackInterval;
         attackInterval = setInterval(() => {
             // If tower is destroyed or troop is dead, stop attacking

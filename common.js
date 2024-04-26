@@ -1,4 +1,5 @@
 // pos here is the troop/tower position
+// dph -> damage per hit, hitpoints -> health
 class GameEntityAttributes {
     constructor(hitpoints, dph, pos) {
         this._totalHP = hitpoints;

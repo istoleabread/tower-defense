@@ -68,7 +68,7 @@ class Combat {
         const config = { attributes: false, childList: true, subtree: true };
         const callback = (mutationList) => {
             mutationList.forEach((mutation) => {
-                if (mutation.removedNodes.length) return;
+                if (mutation.removedNodes.length) return; // Do nothing if a troop is removed
 
                 let targetPos = mutation.addedNodes[0].id;
                 let currentTarget = this.troopObjs.find((troop) => {

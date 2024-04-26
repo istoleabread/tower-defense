@@ -40,23 +40,18 @@ class Combat {
                 this.troopObjs.push(archer);
                 this.util.addTroopToDOM(archer, parentPos, this.towerObjs);
                 archer.calculateCurrentCoordinates();
-                console.log(this.troopObjs);
                 return;
             case "wizard":
                 const wizard = new Wizard();
                 this.troopObjs.push(wizard);
                 this.util.addTroopToDOM(wizard, parentPos, this.towerObjs);
                 wizard.calculateCurrentCoordinates();
-                console.log(this.troopObjs);
-
                 return;
             case "noir":
                 const noir = new Noir();
                 this.troopObjs.push(noir);
                 this.util.addTroopToDOM(noir, parentPos, this.towerObjs);
                 noir.calculateCurrentCoordinates();
-                console.log(this.troopObjs);
-
                 return;
             default:
                 return;

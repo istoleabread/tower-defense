@@ -86,7 +86,6 @@ class Archer extends Troop {
     constructor() {
         super(260, 30, "archer");
     }
-
     attackTower(target) {
         this.inventory.throwWeapon("arrow", this.getCoordinates(), target);
     }
@@ -97,7 +96,6 @@ class Wizard extends Troop {
     constructor() {
         super(200, 50, "wizard");
     }
-
     attackTower(target) {
         this.inventory.throwWeapon("magic", this.getCoordinates(), target);
     }
@@ -108,7 +106,6 @@ class Noir extends Troop {
     constructor() {
         super(220, 40, "noir");
     }
-
     attackTower(target) {
         this.inventory.throwWeapon("bats", this.getCoordinates(), target);
     }

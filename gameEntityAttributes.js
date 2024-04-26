@@ -7,6 +7,7 @@ class GameEntityAttributes {
         this._dph = dph;
         this.pos = pos;
         this.inventory = new Weapons();
+        this.util = new Utility();
         this.x;
         this.y;
         this.mappings = {

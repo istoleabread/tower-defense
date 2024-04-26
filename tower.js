@@ -1,29 +1,9 @@
-// dph -> Damage per hit
-// pos is the tower position
 class Tower extends GameEntityAttributes {
     static attackList = {}; // maintain info regarding all towers ongoing combat
     constructor(hitpoints, dph, pos) {
         super(hitpoints, dph, pos);
         this.id = pos;
-        this.createTower();
-    }
-
-    // Add towers to dom
-    createTower() {
-        const tower = document.createElement("div");
-        const healthbar = document.createElement("div");
-        const healthColor = document.createElement("div");
-
-        tower.className = `tower ${this.pos}`;
-        tower.id = this.pos;
-        tower.title = this.pos;
-        healthbar.className = `toHealthBar ${this.pos}health`;
-        healthColor.className = `toHealthColor ${this.pos}color`;
-
-        healthbar.appendChild(healthColor);
-        tower.appendChild(healthbar);
-        document.querySelector(".towers").appendChild(tower);
-        this.setHealthBar(this.calculateHpPercent());
+        this.util.addTowerToDOM(this);
     }
 
     static findAndAttack(towerObjs) {
@@ -78,6 +58,25 @@ class Tower extends GameEntityAttributes {
             }, 890);
         }, 900);
         Tower.attackList[tower.pos] = [currentTarget, attackInterval];
+    }
+
+    getTowerProps() {
+        return {
+            className: `tower ${this.pos}`,
+            id: this.pos,
+            title: this.pos,
+        };
+    }
+
+    getHealthProps(bar = true) {
+        if (bar) {
+            return {
+                className: `toHealthBar ${this.pos}health`,
+            };
+        }
+        return {
+            className: `toHealthColor ${this.pos}color`,
+        };
     }
 
     setHealthBar(percent) {

@@ -74,13 +74,33 @@ class Troop extends GameEntityAttributes {
         elem.style.right = 100 - percent + "%";
     }
 
-    attackTower(target) {}
+    getTroopProps(parentPosition) {
+        return {
+            className: `arenaTroop ${this.name}`,
+            id: this.id,
+            title: this.name,
+            dataset: {
+                type: parentPosition,
+            },
+        };
+    }
+
+    getHealthProps(bar = true) {
+        if (bar) {
+            return {
+                className: `trHealthBar ${this.id}health`,
+            };
+        }
+        return {
+            className: `trHealthColor ${this.id}color`,
+        };
+    }
 }
 
-// An archer will have 130 hitpoints
+// An archer will have 260 hitpoints
 class Archer extends Troop {
     constructor(name) {
-        super(130, 30, name);
+        super(260, 30, name);
     }
 
     attackTower(target) {
@@ -88,10 +108,10 @@ class Archer extends Troop {
     }
 }
 
-// A wizard has 110 hitpoints
+// A wizard has 200 hitpoints
 class Wizard extends Troop {
     constructor(name) {
-        super(500, 50, name);
+        super(200, 50, name);
     }
 
     attackTower(target) {
@@ -99,10 +119,10 @@ class Wizard extends Troop {
     }
 }
 
-// A Noir has 100 hitpoints
+// A Noir has 220 hitpoints
 class Noir extends Troop {
     constructor(name) {
-        super(100, 40, name);
+        super(220, 40, name);
     }
 
     attackTower(target) {

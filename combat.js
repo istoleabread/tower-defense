@@ -2,8 +2,8 @@ class Combat {
     constructor() {
         this.towerObjs = [];
         this.troopObjs = [];
-        this.errorBox = document.querySelector(".errorMsg");
-        this.errorTimeout = "";
+        this.allPositions = document.querySelectorAll(".position");
+        this.util = new Utility();
     }
 
     init() {
@@ -27,8 +27,9 @@ class Combat {
     createTroop(troop) {
         console.log(troop);
         // If there is no empty space in arena, show error
-        if (!this.getEmptyTroopPosition()) {
-            this.showMsg("Please wait for a position to get empty before deploying a new troop!");
+        const parentPos = this.getEmptyTroopPosition();
+        if (!parentPos) {
+            this.util.showMsg("Please wait for a position to get empty before deploying a new troop!");
             return;
         }
 
@@ -36,19 +37,19 @@ class Combat {
             case "archer":
                 const archer = new Archer("archer");
                 this.troopObjs.push(archer);
-                this.addTroopToDom(archer);
+                this.util.addTroopToDOM(archer, parentPos, this.towerObjs);
                 archer.calculateCurrentCoordinates();
                 return;
             case "wizard":
                 const wizard = new Wizard("wizard");
                 this.troopObjs.push(wizard);
-                this.addTroopToDom(wizard);
+                this.util.addTroopToDOM(wizard, parentPos, this.towerObjs);
                 wizard.calculateCurrentCoordinates();
                 return;
             case "noir":
                 const noir = new Noir("noir");
                 this.troopObjs.push(noir);
-                this.addTroopToDom(noir);
+                this.util.addTroopToDOM(noir, parentPos, this.towerObjs);
                 noir.calculateCurrentCoordinates();
                 return;
             default:
@@ -82,48 +83,17 @@ class Combat {
         observer.observe(arena, config);
     }
 
-    addTroopToDom(troopObj) {
-        const troop = document.createElement("div");
-        const healthBar = document.createElement("div");
-        const healthColor = document.createElement("div");
-
-        troop.className = `arenaTroop ${troopObj.name}`;
-        troop.id = troopObj.id;
-        troop.title = troopObj.name;
-        healthBar.className = `trHealthBar ${troopObj.id}health`;
-        healthColor.className = `trHealthColor ${troopObj.id}color`;
-
-        const parentDiv = this.getEmptyTroopPosition();
-        const parentPosition = parentDiv.dataset.type;
-        troop.dataset.type = parentPosition;
-        troopObj.setTroopPos(parentPosition);
-
-        healthBar.appendChild(healthColor);
-        troop.appendChild(healthBar);
-        parentDiv.appendChild(troop);
-
-        Troop.prepareAttackOnTowers(troopObj, this.towerObjs);
-    }
-
     getEmptyTroopPosition() {
         let emptyPos;
-        document.querySelectorAll(".position").forEach((ele) => {
+        this.allPositions.forEach((ele) => {
             if (ele.children.length === 0 && !emptyPos) {
                 emptyPos = ele;
             }
         });
         return emptyPos;
     }
-
-    showMsg(msg, color = "orangered") {
-        if (this.errorTimeout) clearTimeout(this.errorTimeout);
-        this.errorBox.textContent = msg;
-        this.errorBox.style.backgroundColor = color;
-        this.errorTimeout = setTimeout(() => {
-            this.errorBox.textContent = "";
-        }, 1700);
-    }
 }
 
 const combat = new Combat();
 combat.init();
+// console.log(combat.util);

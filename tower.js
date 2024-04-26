@@ -16,7 +16,6 @@ class Tower extends GameEntityAttributes {
         if (!currentTarget.isActive()) {
             return;
         }
-
         for (const tower of towerObjs) {
             // if tower is already destroyed, skip the loop
             if (!tower.isActive()) {
@@ -29,7 +28,6 @@ class Tower extends GameEntityAttributes {
                     clearInterval(Tower.attackList[tower.pos][1]);
                     delete Tower.attackList[tower.pos];
                 }
-
                 this.attackOnTroop(currentTarget, tower, towerObjs);
             } else if (!Tower.attackList[tower.pos]) {
                 // If tower is not already occupied with its main enemy, attack the troop at any position
@@ -48,13 +46,12 @@ class Tower extends GameEntityAttributes {
                 Tower.findAndAttack(towerObjs);
                 return;
             }
-
             tower.attackTroop(currentTarget);
 
             // Do damage to opponent after weapon reaches their position
             setTimeout(() => {
                 currentTarget.takeDamage(tower.getDPH());
-                currentTarget.setHealthBar(currentTarget.calculateHpPercent());
+                currentTarget.util.setHealthBar(currentTarget);
             }, 890);
         }, 900);
         Tower.attackList[tower.pos] = [currentTarget, attackInterval];
@@ -71,27 +68,18 @@ class Tower extends GameEntityAttributes {
     getHealthProps(bar = true) {
         if (bar) {
             return {
-                className: `toHealthBar ${this.pos}health`,
+                className: `toHealthBar ${this.id}health`,
             };
         }
         return {
-            className: `toHealthColor ${this.pos}color`,
+            className: `toHealthColor ${this.id}color`,
         };
     }
-
-    setHealthBar(percent) {
-        percent = percent || 0;
-        const elem = document.querySelector(`.${this.pos}color`);
-        elem.style.backgroundColor = this.getBarColor(percent);
-        elem.style.right = 100 - percent + "%";
-    }
-
-    attackTroop(target) {}
 }
 
 class FireTower extends Tower {
     constructor() {
-        super(550, 35, "towerFire");
+        super(600, 40, "towerFire");
     }
 
     attackTroop(target) {
@@ -101,7 +89,7 @@ class FireTower extends Tower {
 
 class CannonTower extends Tower {
     constructor() {
-        super(650, 40, "towerCannon");
+        super(650, 50, "towerCannon");
     }
 
     attackTroop(target) {
@@ -111,7 +99,7 @@ class CannonTower extends Tower {
 
 class ArcherTower extends Tower {
     constructor() {
-        super(400, 30, "towerArrow");
+        super(500, 30, "towerArrow");
     }
 
     attackTroop(target) {

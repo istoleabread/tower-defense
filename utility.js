@@ -38,6 +38,11 @@ class Utility {
         Troop.prepareAttackOnTowers(troopObj, towerObjs);
     }
 
+    removeTroopFromDOM(troopObj) {
+        const troop = document.getElementById(troopObj.id);
+        document.querySelector(`.${troopObj.pos}`).removeChild(troop);
+    }
+
     addTowerToDOM(towerObj) {
         const tower = this.createElement(towerObj.getTowerProps());
         const healthBar = this.createElement(towerObj.getHealthProps());
@@ -46,7 +51,7 @@ class Utility {
         healthBar.appendChild(healthColor);
         tower.appendChild(healthBar);
         this.towerArea.appendChild(tower);
-        towerObj.setHealthBar(towerObj.calculateHpPercent());
+        this.setHealthBar(towerObj);
     }
 
     showMsg(msg, color = "orangered") {
@@ -56,5 +61,13 @@ class Utility {
         this.errorTimeout = setTimeout(() => {
             this.errorBox.textContent = "";
         }, 1700);
+    }
+
+    setHealthBar(obj) {
+        const percent = obj.calculateHpPercent() || 0;
+        const elem = document.querySelector(`.${obj.id}color`);
+        if (!elem) return;
+        elem.style.backgroundColor = obj.getBarColor(percent);
+        elem.style.right = 100 - percent + "%";
     }
 }

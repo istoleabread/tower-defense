@@ -25,32 +25,38 @@ class Combat {
     }
 
     createTroop(troop) {
-        console.log(troop);
-        // If there is no empty space in arena, show error
         const parentPos = this.getEmptyTroopPosition();
+        // If there is no empty space in arena, show error
         if (!parentPos) {
-            this.util.showMsg("Please wait for a position to get empty before deploying a new troop!");
+            this.util.showMsg(
+                "Please wait for a position to get empty before deploying a new troop!"
+            );
             return;
         }
 
         switch (troop) {
             case "archer":
-                const archer = new Archer("archer");
+                const archer = new Archer();
                 this.troopObjs.push(archer);
                 this.util.addTroopToDOM(archer, parentPos, this.towerObjs);
                 archer.calculateCurrentCoordinates();
+                console.log(this.troopObjs);
                 return;
             case "wizard":
-                const wizard = new Wizard("wizard");
+                const wizard = new Wizard();
                 this.troopObjs.push(wizard);
                 this.util.addTroopToDOM(wizard, parentPos, this.towerObjs);
                 wizard.calculateCurrentCoordinates();
+                console.log(this.troopObjs);
+
                 return;
             case "noir":
-                const noir = new Noir("noir");
+                const noir = new Noir();
                 this.troopObjs.push(noir);
                 this.util.addTroopToDOM(noir, parentPos, this.towerObjs);
                 noir.calculateCurrentCoordinates();
+                console.log(this.troopObjs);
+
                 return;
             default:
                 return;
@@ -96,4 +102,3 @@ class Combat {
 
 const combat = new Combat();
 combat.init();
-// console.log(combat.util);

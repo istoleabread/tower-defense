@@ -1,4 +1,3 @@
-// hitpoints -> health, dph -> damage per hit
 class Troop extends GameEntityAttributes {
     static count = 0;
     constructor(hitpoints, dph, name) {
@@ -19,20 +18,17 @@ class Troop extends GameEntityAttributes {
         currentTarget = towerObjs.find((tower) => {
             return tower.pos === mainTower && tower.isActive();
         });
-
         // If currentTarget is already destroyed, find the first standing tower
         if (!currentTarget) {
             currentTarget = towerObjs.find((tower) => {
                 return tower.isActive();
             });
         }
-
         if (!currentTarget) {
             console.log("All towers destroyed!");
             return;
         }
 
-        // Attack the tower
         Troop.attackOnTower(currentTarget, troopObj, towerObjs);
     }
 
@@ -46,32 +42,20 @@ class Troop extends GameEntityAttributes {
                 Troop.prepareAttackOnTowers(troopObj, towerObjs);
                 return;
             }
-
             // If troop is dead, stop attacking and remove from DOM
             if (!troopObj.isActive()) {
                 clearInterval(attackInterval);
-                const troop = document.getElementById(troopObj.id);
-                document.querySelector(`.${troopObj.pos}`).removeChild(troop);
+                troopObj.util.removeTroopFromDOM(troopObj);
                 return;
             }
-
             troopObj.attackTower(coord);
 
             // Do damage to opponent after weapon reaches their position
             setTimeout(() => {
                 currentTarget.takeDamage(troopObj.getDPH());
-                currentTarget.setHealthBar(currentTarget.calculateHpPercent());
+                currentTarget.util.setHealthBar(currentTarget);
             }, 990);
         }, 1000);
-    }
-
-    setHealthBar(percent) {
-        const elem = document.querySelector(`.${this.id}color`);
-        if (!elem) {
-            return;
-        }
-        elem.style.backgroundColor = this.getBarColor(percent);
-        elem.style.right = 100 - percent + "%";
     }
 
     getTroopProps(parentPosition) {
@@ -99,8 +83,8 @@ class Troop extends GameEntityAttributes {
 
 // An archer will have 260 hitpoints
 class Archer extends Troop {
-    constructor(name) {
-        super(260, 30, name);
+    constructor() {
+        super(260, 30, "archer");
     }
 
     attackTower(target) {
@@ -110,8 +94,8 @@ class Archer extends Troop {
 
 // A wizard has 200 hitpoints
 class Wizard extends Troop {
-    constructor(name) {
-        super(200, 50, name);
+    constructor() {
+        super(200, 50, "wizard");
     }
 
     attackTower(target) {
@@ -121,8 +105,8 @@ class Wizard extends Troop {
 
 // A Noir has 220 hitpoints
 class Noir extends Troop {
-    constructor(name) {
-        super(220, 40, name);
+    constructor() {
+        super(220, 40, "noir");
     }
 
     attackTower(target) {

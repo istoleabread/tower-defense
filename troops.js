@@ -12,48 +12,48 @@ class Troop extends GameEntityAttributes {
         this.pos = pos;
     }
 
-    static prepareAttackOnTowers(troopObj, towerObjs) {
-        let currentTarget;
-        const mainTower = troopObj.getCurrentEnemy(); // Get the tower in front of troop
-        currentTarget = towerObjs.find((tower) => {
-            return tower.pos === mainTower && tower.isActive();
-        });
-        // If currentTarget is already destroyed, find the first standing tower
-        if (!currentTarget) {
-            currentTarget = towerObjs.find((tower) => {
-                return tower.isActive();
-            });
-        }
-        if (!currentTarget) {
-            console.log("All towers destroyed!");
-            return;
-        }
+    addTroopToDOM(parentDiv) {
+        return new Promise((resolve, reject) => {
+            const parentPosition = parentDiv.dataset.type;
+            this.setTroopPos(parentPosition);
 
-        Troop.attackOnTower(currentTarget, troopObj, towerObjs);
+            const troop = this.util.createElement(this.getTroopProps(parentPosition));
+            const healthBar = this.util.createElement(this.getHealthProps());
+            const healthColor = this.util.createElement(this.getHealthProps(false));
+
+            healthBar.appendChild(healthColor);
+            troop.appendChild(healthBar);
+            parentDiv.appendChild(troop);
+
+            this.calculateCurrentCoordinates();
+            resolve(this);
+        });
     }
 
-    static attackOnTower(currentTarget, troopObj, towerObjs) {
+    // currentTarget -> Tower which the troop will be attacking
+    attackOnTower(currentTarget) {
         let attackInterval;
         const coord = currentTarget.getCoordinates();
         attackInterval = setInterval(() => {
             // If current tower is destroyed, clearInterval and find new standing tower
             if (!currentTarget.isActive()) {
                 clearInterval(attackInterval);
-                Troop.prepareAttackOnTowers(troopObj, towerObjs);
+                this.towerDestroyedEvent();
                 return;
             }
             // If troop is dead, stop attacking and remove from DOM
-            if (!troopObj.isActive()) {
+            if (!this.isActive()) {
                 clearInterval(attackInterval);
-                troopObj.util.removeTroopFromDOM(troopObj);
+                const troop = document.getElementById(this.id);
+                DOMCache[`${this.pos}`].removeChild(troop);
                 return;
             }
-            troopObj.attackTower(coord);
+            this.attackTower(coord);
 
             // Do damage to opponent after weapon reaches their position
             setTimeout(() => {
-                currentTarget.takeDamage(troopObj.getDPH());
-                currentTarget.util.setHealthBar(currentTarget);
+                currentTarget.takeDamage(this.getDPH());
+                currentTarget.setHealthBar();
             }, 990);
         }, 1000);
     }
@@ -78,6 +78,11 @@ class Troop extends GameEntityAttributes {
         return {
             className: `trHealthColor ${this.id}color`,
         };
+    }
+
+    towerDestroyedEvent() {
+        const event = new CustomEvent("towerDestroyed", { detail: { troop: this } });
+        document.dispatchEvent(event);
     }
 }
 

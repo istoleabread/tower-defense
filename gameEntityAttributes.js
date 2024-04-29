@@ -65,4 +65,12 @@ class GameEntityAttributes {
             return "red";
         }
     }
+
+    setHealthBar() {
+        const percent = this.calculateHpPercent() || 0;
+        const elem = document.querySelector(`.${this.id}color`);
+        if (!elem) return;
+        elem.style.backgroundColor = this.getBarColor(percent);
+        elem.style.right = 100 - percent + "%";
+    }
 }

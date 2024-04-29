@@ -3,58 +3,50 @@ class Tower extends GameEntityAttributes {
     constructor(hitpoints, dph, pos) {
         super(hitpoints, dph, pos);
         this.id = pos;
-        this.util.addTowerToDOM(this);
+        this.addTowerToDOM();
     }
 
-    static findAndAttack(towerObjs) {
+    addTowerToDOM() {
+        const tower = this.util.createElement(this.getTowerProps());
+        const healthBar = this.util.createElement(this.getHealthProps());
+        const healthColor = this.util.createElement(this.getHealthProps(false));
+
+        healthBar.appendChild(healthColor);
+        tower.appendChild(healthBar);
+        DOMCache.towerArea.appendChild(tower);
+
+        this.setHealthBar();
+    }
+
+    findAndAttack() {
         if (!Object.values(Tower.attackList).length) return; // If there is no combat ongoing, return
-        const firstTarget = Object.values(Tower.attackList)[0][0];
-        Tower.prepareAttackOnTroops(firstTarget, towerObjs);
+        const target = Object.values(Tower.attackList)[0][0];
+        const troopFound = new CustomEvent("troopFound", {
+            detail: { target: target },
+        });
+        document.dispatchEvent(troopFound);
     }
 
-    static prepareAttackOnTroops(currentTarget, towerObjs) {
-        if (!currentTarget.isActive()) {
-            return;
-        }
-        for (const tower of towerObjs) {
-            // if tower is already destroyed, skip the loop
-            if (!tower.isActive()) {
-                continue;
-            }
-            // if current target is the tower's main enemy
-            if (currentTarget.pos === tower.getCurrentEnemy()) {
-                // If tower is already in a combat other than its main enemy, leave that combat and start a new combat with its main enemy
-                if (Tower.attackList[tower.pos]) {
-                    clearInterval(Tower.attackList[tower.pos][1]);
-                    delete Tower.attackList[tower.pos];
-                }
-                this.attackOnTroop(currentTarget, tower, towerObjs);
-            } else if (!Tower.attackList[tower.pos]) {
-                // If tower is not already occupied with its main enemy, attack the troop at any position
-                this.attackOnTroop(currentTarget, tower, towerObjs);
-            }
-        }
-    }
-
-    static attackOnTroop(currentTarget, tower, towerObjs) {
+    // currentTarget -> troop which the tower will be attacking
+    attackOnTroop(currentTarget) {
         let attackInterval;
         attackInterval = setInterval(() => {
             // If tower is destroyed or troop is dead, stop attacking
-            if (!currentTarget.isActive() || !tower.isActive()) {
+            if (!currentTarget.isActive() || !this.isActive()) {
                 clearInterval(attackInterval);
-                delete Tower.attackList[tower.pos];
-                Tower.findAndAttack(towerObjs);
+                delete Tower.attackList[this.pos];
+                this.findAndAttack();
                 return;
             }
-            tower.attackTroop(currentTarget);
+            this.attackTroop(currentTarget);
 
             // Do damage to opponent after weapon reaches their position
             setTimeout(() => {
-                currentTarget.takeDamage(tower.getDPH());
-                currentTarget.util.setHealthBar(currentTarget);
+                currentTarget.takeDamage(this.getDPH());
+                currentTarget.setHealthBar();
             }, 890);
         }, 900);
-        Tower.attackList[tower.pos] = [currentTarget, attackInterval];
+        Tower.attackList[this.pos] = [currentTarget, attackInterval];
     }
 
     getTowerProps() {
